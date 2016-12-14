@@ -1,6 +1,0 @@
-{
-  "name": "uGraph",
-  "tagline": "A feature-rich HTML5 canvas library",
-  "body": "# uGraph\r\n\r\n## Intro\r\nuGraph is an MIT-licensed open source project, and is a feature-rich JavaScript library for implementing custom interactive diagrams\r\n\r\n## License\r\n[MIT](https://opensource.org/licenses/MIT)",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}
