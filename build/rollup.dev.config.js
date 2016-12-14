@@ -7,5 +7,5 @@ export default {
 	plugins: [
 		buble()
 	],
-	dest: `dist/ugraph.js`
+	dest: 'dist/ugraph.js'
 }

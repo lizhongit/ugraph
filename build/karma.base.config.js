@@ -1,4 +1,3 @@
-let webpack = require('webpack')
 let path = require('path')
 
 let webpackConfig = {
@@ -53,7 +52,7 @@ module.exports = {
 	coverageReporter: {
 		dir: '../coverage',
 		reporters: [
-			{ type: 'text-summary', subdir: '.', file: 'text-summary.txt' },
+			{ type: 'text-summary', subdir: '.' },
 			{ type: 'html', subdir: 'report-html' }
 		]
 	},
