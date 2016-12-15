@@ -1,6 +1,12 @@
+import initMixin from './init'
+// import { error } from '../util/error'
 
-const uGraph = (option) => {
-	console.log(option)
+function Graph (element, option) {
+	if (!(this instanceof Graph)) {
+		// error('Graph is a constructor and should be called with the `new` keyword')
+	}
+	this._init(element, option)
 }
 
-export default uGraph
+initMixin(Graph)
+export default Graph
