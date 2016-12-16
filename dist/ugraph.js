@@ -61,14 +61,58 @@ var initMixin = function (Graph) {
 	};
 };
 
+function Rect () {
+}
+
+/**
+ * Require definition
+ */
+Rect.prototype.draw = function () {
+
+};
+
+var shapes = { Rect: Rect };
+
+var shapeMixin = function (Graph) {
+
+	/**
+	 * Register shape
+	 * @param name
+	 * @param shape
+	 */
+	Graph.prototype.setShape = function (name, shape) {
+		shapes[name] = shape;
+	};
+
+	/**
+	 * Get shape by name
+	 * @param name
+	 */
+	Graph.prototype.getShape = function (name) {
+		return shapes[name]
+	};
+};
+
+/**
+ * warn
+ * @param msg
+ */
+var warn = function (msg) {
+	console.warn(msg);
+};
+
+// import { error } from '../util/error'
 function Graph (element, option) {
 	if (!(this instanceof Graph)) {
+		var msg = 'Graph is a constructor and should be called with the `new` keyword';
+		warn(msg);
 		// error('Graph is a constructor and should be called with the `new` keyword')
 	}
 	this._init(element, option);
 }
 
 initMixin(Graph);
+shapeMixin(Graph);
 
 var randomInt = function (min, max) {
 	if ( min === void 0 ) min = 0;

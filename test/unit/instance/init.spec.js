@@ -2,7 +2,7 @@ import Graph from 'core/index'
 
 describe('Initialization', () => {
 	it('element is null', () => {
-		expect(Graph).to.throw(Error);
+		expect(Graph).to.throw(Error)
 	})
 
 	let graph = new Graph(document.body)
@@ -21,6 +21,18 @@ describe('Initialization', () => {
 
 	it('should be has property _option', () => {
 		expect(graph).to.have.property('_option')
+	})
+
+	describe('setShape', () => {
+		it('should be a function ', () => {
+			expect(graph.setShape).to.be.a('function')
+		})
+
+		let shape = () => {}
+		graph.setShape('testShape', shape)
+		it('has a testShape', () => {
+			expect(graph.getShape('testShape')).to.equal(shape)
+		})
 	})
 
 	describe('_canvasElement', () => {
@@ -45,7 +57,6 @@ describe('Initialization', () => {
 		it('position relative', () => {
 			expect(style.position).to.equal('relative')
 		})
-
 	})
 
 })
