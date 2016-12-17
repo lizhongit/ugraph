@@ -15,8 +15,8 @@ describe('Initialization', () => {
 		expect(graph._element).to.equal(document.body)
 	})
 
-	it('should be has property _canvasElement', () => {
-		expect(graph).to.have.property('_canvasElement')
+	it('should be has property _svgElement', () => {
+		expect(graph).to.have.property('_svgElement')
 	})
 
 	it('should be has property _option', () => {
@@ -35,8 +35,8 @@ describe('Initialization', () => {
 		})
 	})
 
-	describe('_canvasElement', () => {
-		let style = graph._canvasElement.style
+	describe('_svgElement', () => {
+		let style = graph._svgElement.style
 
 		it('width 100%', () => {
 			expect(style.width).to.equal('100%')

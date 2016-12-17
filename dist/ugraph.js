@@ -9,8 +9,9 @@ var error = function (errorMsg) {
 };
 
 var initMixin = function (Graph) {
+
 	/**
-	 * Init Element, Exclude tag name equal 'canvas'
+	 * Init Element, Exclude tag name equal 'svg'
 	 * Recommend assign DIV Element
 	 * @param element
 	 * @param option
@@ -23,12 +24,16 @@ var initMixin = function (Graph) {
 		this._element = element;
 		this._option = option;
 
-		if (typeof element === 'object' && element instanceof HTMLElement) {
+		if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
 			this._initElement();
 			this._initOption();
 		} else {
 			// throw error and stop running script
-			error('Element must be a HTMLElement object');
+			if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
+				error('Can\'t into SVG element.');
+			} else {
+				error('Element must be a HTMLElement object.');
+			}
 		}
 	};
 
@@ -43,15 +48,20 @@ var initMixin = function (Graph) {
 		// Init element style
 		this._element.style.padding = 0;
 
-		// Append canvas to element
-		this._canvasElement = document.createElement('canvas');
-		this._canvasElement.style.cssText = [
+		// Append svg to element
+		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this._svgElement.setAttributeNS(null, 'width', '100%');
+		this._svgElement.setAttributeNS(null, 'height', '100%');
+		this._svgElement.style.cssText = [
+			'padding: 0',
+			'left: 0',
+			'top: 0',
 			'width: 100%',
 			'height: 100%',
-			'padding: 0'
+			'position: absolute'
 		].join(';');
 
-		this._element.appendChild(this._canvasElement);
+		this._element.appendChild(this._svgElement);
 	};
 
 	Graph.prototype._initOption = function (option) {
@@ -71,7 +81,10 @@ Rect.prototype.draw = function () {
 
 };
 
-var shapes = { Rect: Rect };
+var shapes = {
+	rect: Rect
+};
+
 
 var shapeMixin = function (Graph) {
 
@@ -101,7 +114,109 @@ var warn = function (msg) {
 	console.warn(msg);
 };
 
-// import { error } from '../util/error'
+/**
+ * log
+ * @param msg
+ */
+
+/**
+ * Diff json
+ * @type {{}}
+ */
+var renderMixin = function (Graph) {
+
+	Graph.prototype._svgNS = 'http://www.w3.org/2000/svg';
+
+	Graph.prototype._checkNodeData = function (node) {
+		return typeof node.x === 'number'
+			&& typeof node.y === 'number'
+			&& typeof node.width === 'number'
+			&& typeof node.height === 'number'
+			&& this.getShape(node.shape)
+	};
+
+	/**
+	 * Source from _json property
+	 */
+	Graph.prototype.render = function () {
+		var this$1 = this;
+
+
+		// TODO nodes
+		if (Array.isArray(this._json.nodes)) {
+			this._json.nodes.filter(function (item) { return this$1._checkNodeData(item); }).forEach(function (item) {
+				this$1._createShape(item);
+			});
+		}
+	};
+
+	Graph.prototype._createShape = function (item) {
+		switch (item.shape) {
+			case 'rect':
+				return this._createRectShape(item)
+				break
+
+			default:
+				return false
+		}
+	};
+
+	Graph.prototype._createRectShape = function (item) {
+		var element = document.createElementNS(this._svgNS, 'rect');
+		element.setAttributeNS(null, 'x', item.x);
+		element.setAttributeNS(null, 'y', item.y);
+		element.setAttributeNS(null, 'width', item.width);
+		element.setAttributeNS(null, 'height', item.height);
+		element.setAttributeNS(null, 'fill', 'red');
+		this._svgElement.appendChild(element);
+		return element
+	};
+};
+
+var jsonMixin = function (Graph) {
+
+	/**
+	 * Require JSON string
+	 */
+	Graph.prototype.loadJson = function (json) {
+		// TODO Inject loading tips
+		try {
+			this._json = JSON.parse(json);
+		} catch (e) {
+			warn(e);
+		} finally {
+			// TODO Inject loading tips
+		}
+	};
+
+	// TODO Insert node
+	/**
+	 * x, y, width, height, shape
+	 */
+	Graph.prototype.insertNode = function () {};
+
+	// TODO Insert line
+	Graph.prototype.insertLine = function () {};
+
+	Graph.prototype._json = {};
+
+	Graph.prototype.getJson = function () {
+		var json = '';
+
+		// TODO Inject loading tips
+
+		try {
+			json = JSON.stringify(this._json);
+		} catch (e) {
+			warn(e);
+		} finally {
+			// TODO Inject loading tips
+		}
+
+		return json
+	};
+};
+
 function Graph (element, option) {
 	if (!(this instanceof Graph)) {
 		var msg = 'Graph is a constructor and should be called with the `new` keyword';
@@ -113,6 +228,8 @@ function Graph (element, option) {
 
 initMixin(Graph);
 shapeMixin(Graph);
+renderMixin(Graph);
+jsonMixin(Graph);
 
 var randomInt = function (min, max) {
 	if ( min === void 0 ) min = 0;

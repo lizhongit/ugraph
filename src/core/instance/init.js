@@ -1,8 +1,9 @@
 import { error } from '../util/error'
 
 export default (Graph) => {
+
 	/**
-	 * Init Element, Exclude tag name equal 'canvas'
+	 * Init Element, Exclude tag name equal 'svg'
 	 * Recommend assign DIV Element
 	 * @param element
 	 * @param option
@@ -12,12 +13,16 @@ export default (Graph) => {
 		this._element = element
 		this._option = option
 
-		if (typeof element === 'object' && element instanceof HTMLElement) {
+		if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
 			this._initElement()
 			this._initOption()
 		} else {
 			// throw error and stop running script
-			error('Element must be a HTMLElement object')
+			if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
+				error('Can\'t into SVG element.')
+			} else {
+				error('Element must be a HTMLElement object.')
+			}
 		}
 	}
 
@@ -32,15 +37,20 @@ export default (Graph) => {
 		// Init element style
 		this._element.style.padding = 0
 
-		// Append canvas to element
-		this._canvasElement = document.createElement('canvas')
-		this._canvasElement.style.cssText = [
+		// Append svg to element
+		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+		this._svgElement.setAttributeNS(null, 'width', '100%')
+		this._svgElement.setAttributeNS(null, 'height', '100%')
+		this._svgElement.style.cssText = [
+			'padding: 0',
+			'left: 0',
+			'top: 0',
 			'width: 100%',
 			'height: 100%',
-			'padding: 0'
+			'position: absolute'
 		].join(';')
 
-		this._element.appendChild(this._canvasElement)
+		this._element.appendChild(this._svgElement)
 	}
 
 	Graph.prototype._initOption = function (option = {}) {

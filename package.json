@@ -2,7 +2,7 @@
   "name": "ugraph",
   "title": "uGraph",
   "version": "1.0.0",
-  "description": "A feature-rich HTML5 canvas library",
+  "description": "A feature-rich SVG library",
   "main": "index.js",
   "scripts": {
     "dev": "rollup -w -c build/rollup.dev.config.js",
@@ -18,10 +18,8 @@
   },
   "keywords": [
     "ugraph",
-    "canvas",
-    "html5",
+    "svg",
     "javascript",
-    "flowwork",
     "library"
   ],
   "author": "Jong Lee <mail@lizhong.me>",

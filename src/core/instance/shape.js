@@ -1,6 +1,9 @@
-import { Rect } from '../../shapes/index'
+import { Rect } from '../shapes/index'
 
-const shapes = { Rect }
+const shapes = {
+	rect: Rect
+}
+
 
 export default (Graph) => {
 

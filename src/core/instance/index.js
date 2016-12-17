@@ -2,6 +2,8 @@ import initMixin from './init'
 import shapeMixin from './shape'
 // import { error } from '../util/error'
 import { warn } from '../util/console'
+import renderMixin from './render'
+import jsonMixin from './json'
 
 function Graph (element, option) {
 	if (!(this instanceof Graph)) {
@@ -14,4 +16,6 @@ function Graph (element, option) {
 
 initMixin(Graph)
 shapeMixin(Graph)
+renderMixin(Graph)
+jsonMixin(Graph)
 export default Graph

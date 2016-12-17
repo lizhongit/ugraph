@@ -4,8 +4,6 @@ export default {
 	entry: 'src/main.js',
 	format: 'umd',
 	moduleName: 'Graph',
-	plugins: [
-		buble()
-	],
+	plugins: [buble()],
 	dest: 'dist/ugraph.js'
 }
