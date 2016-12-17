@@ -1,16 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>JSON</title>
-    <script src="../../dist/ugraph.js"></script>
-    <script>
-        new uGraph({
-        	message: 'Options'
-        });
-    </script>
+  <meta charset="UTF-8">
+  <title>JSON</title>
+
+	<style type="text/css">
+		#graph {
+			width: 100%;
+			height: 500px;
+			border: 1px solid #CCC;
+		}
+	</style>
+
+  <script src="../../dist/ugraph.js"></script>
 </head>
 <body>
+	<div id="graph"></div>
 
+	<script>
+	  window.onload = function () {
+	  	// Init graph
+	    var graph = new Graph(document.querySelector('#graph'));
+
+	    // Definition JSON data
+		  var json = {
+
+		  	// Nodes
+		  	nodes: [
+				  {
+				  	x: 100,
+					  y: 100,
+					  width: 300,
+					  height: 200,
+
+					  // TODO Need provide getShapesName function of Graph
+					  // Shape view call the function graph.getShapesName
+					  shape: 'rect'
+				  }
+			  ]
+		  };
+
+		  // Load text json format
+		  graph.loadJson(JSON.stringify(json));
+
+		  // Render graph
+		  graph.render();
+
+		  window.graph = graph;
+	  };
+	</script>
 </body>
 </html>
