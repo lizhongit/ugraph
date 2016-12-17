@@ -115,11 +115,6 @@ var warn = function (msg) {
 };
 
 /**
- * log
- * @param msg
- */
-
-/**
  * Diff json
  * @type {{}}
  */
@@ -217,6 +212,7 @@ var jsonMixin = function (Graph) {
 	};
 };
 
+// import { error } from '../util/error'
 function Graph (element, option) {
 	if (!(this instanceof Graph)) {
 		var msg = 'Graph is a constructor and should be called with the `new` keyword';
