@@ -1,4 +1,4 @@
-import { error } from '../util/error'
+import * as util from '../util/index'
 
 export default (Graph) => {
 
@@ -19,9 +19,9 @@ export default (Graph) => {
 		} else {
 			// throw error and stop running script
 			if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
-				error('Can\'t into SVG element.')
+				util.error('Can\'t into SVG element.')
 			} else {
-				error('Element must be a HTMLElement object.')
+				util.error('Element must be a HTMLElement object.')
 			}
 		}
 	}
@@ -38,9 +38,9 @@ export default (Graph) => {
 		this._element.style.padding = 0
 
 		// Append svg to element
-		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-		this._svgElement.setAttributeNS(null, 'width', '100%')
-		this._svgElement.setAttributeNS(null, 'height', '100%')
+		this._svgElement = util.createElement('svg')
+		util.setAttribute(this._svgElement, 'width', '100%')
+		util.setAttribute(this._svgElement, 'height', '100%')
 		this._svgElement.style.cssText = [
 			'padding: 0',
 			'left: 0',

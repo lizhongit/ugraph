@@ -1,7 +1,8 @@
-import { Rect } from '../shapes/index'
+import { Rect, Circle } from '../shapes/index'
 
 const shapes = {
-	rect: Rect
+	rect: Rect,
+	circle: Circle
 }
 
 

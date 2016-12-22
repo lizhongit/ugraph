@@ -4,9 +4,35 @@
 	(global.Graph = factory());
 }(this, (function () { 'use strict';
 
-var error = function (errorMsg) {
+var randomInt = function (min, max) {
+	if ( min === void 0 ) min = 0;
+	if ( max === void 0 ) max = 1000;
+
+	return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
+};
+
+var error$1 = function (errorMsg) {
 	throw new Error(errorMsg)
 };
+
+var SVG_NS = 'http://www.w3.org/2000/svg';
+
+var createElement = function (tagName) {
+	return document.createElementNS(SVG_NS, tagName)
+};
+
+var setAttribute = function (element, attr, value) {
+	element.setAttributeNS(null, attr, value);
+};
+
+
+
+var util = Object.freeze({
+	randomInt: randomInt,
+	error: error$1,
+	createElement: createElement,
+	setAttribute: setAttribute
+});
 
 var initMixin = function (Graph) {
 
@@ -30,9 +56,9 @@ var initMixin = function (Graph) {
 		} else {
 			// throw error and stop running script
 			if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
-				error('Can\'t into SVG element.');
+				error$1('Can\'t into SVG element.');
 			} else {
-				error('Element must be a HTMLElement object.');
+				error$1('Element must be a HTMLElement object.');
 			}
 		}
 	};
@@ -49,9 +75,9 @@ var initMixin = function (Graph) {
 		this._element.style.padding = 0;
 
 		// Append svg to element
-		this._svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		this._svgElement.setAttributeNS(null, 'width', '100%');
-		this._svgElement.setAttributeNS(null, 'height', '100%');
+		this._svgElement = createElement('svg');
+		setAttribute(this._svgElement, 'width', '100%');
+		setAttribute(this._svgElement, 'height', '100%');
 		this._svgElement.style.cssText = [
 			'padding: 0',
 			'left: 0',
@@ -71,18 +97,46 @@ var initMixin = function (Graph) {
 	};
 };
 
-function Rect () {
+function Rect (graph, data) {
+	this.data = data;
+	this.graph = graph;
+	this.init();
 }
 
 /**
  * Require definition
  */
-Rect.prototype.draw = function () {
+Rect.prototype.init = function () {
+	this.element = createElement('rect');
+	setAttribute(this.element, 'x', this.data.x);
+	setAttribute(this.element, 'y', this.data.y);
+	setAttribute(this.element, 'width', this.data.width);
+	setAttribute(this.element, 'height', this.data.height);
+	setAttribute(this.element, 'fill', 'red');
+	this.graph._svgElement.appendChild(this.element);
+};
 
+function Circle (graph, data) {
+	this.data = data;
+	this.graph = graph;
+	this.init();
+}
+
+/**
+ * Require definition
+ */
+Circle.prototype.init = function () {
+	this.element = createElement('circle');
+	setAttribute(this.element, 'cx', this.data.x);
+	setAttribute(this.element, 'cy', this.data.y);
+	setAttribute(this.element, 'r', this.data.r);
+	setAttribute(this.element, 'fill', 'blue');
+	this.graph._svgElement.appendChild(this.element);
 };
 
 var shapes = {
-	rect: Rect
+	rect: Rect,
+	circle: Circle
 };
 
 
@@ -125,8 +179,6 @@ var warn = function (msg) {
  */
 var renderMixin = function (Graph) {
 
-	Graph.prototype._svgNS = 'http://www.w3.org/2000/svg';
-
 	Graph.prototype._checkNodeData = function (node) {
 		return typeof node.x === 'number'
 			&& typeof node.y === 'number'
@@ -151,25 +203,10 @@ var renderMixin = function (Graph) {
 	};
 
 	Graph.prototype._createShape = function (item) {
-		switch (item.shape) {
-			case 'rect':
-				return this._createRectShape(item)
-				break
-
-			default:
-				return false
+		var Shape = this.getShape(item.shape);
+		if (Shape) {
+			new Shape(this, item);
 		}
-	};
-
-	Graph.prototype._createRectShape = function (item) {
-		var element = document.createElementNS(this._svgNS, 'rect');
-		element.setAttributeNS(null, 'x', item.x);
-		element.setAttributeNS(null, 'y', item.y);
-		element.setAttributeNS(null, 'width', item.width);
-		element.setAttributeNS(null, 'height', item.height);
-		element.setAttributeNS(null, 'fill', 'red');
-		this._svgElement.appendChild(element);
-		return element
 	};
 };
 
@@ -230,20 +267,6 @@ initMixin(Graph);
 shapeMixin(Graph);
 renderMixin(Graph);
 jsonMixin(Graph);
-
-var randomInt = function (min, max) {
-	if ( min === void 0 ) min = 0;
-	if ( max === void 0 ) max = 1000;
-
-	return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
-};
-
-
-
-var util = Object.freeze({
-	randomInt: randomInt,
-	error: error
-});
 
 Graph.util = util;
 

@@ -6,8 +6,6 @@ const state = {}
 
 export default (Graph) => {
 
-	Graph.prototype._svgNS = 'http://www.w3.org/2000/svg'
-
 	Graph.prototype._checkNodeData = function (node) {
 		return typeof node.x === 'number'
 			&& typeof node.y === 'number'
@@ -30,24 +28,9 @@ export default (Graph) => {
 	}
 
 	Graph.prototype._createShape = function (item) {
-		switch (item.shape) {
-			case 'rect':
-				return this._createRectShape(item)
-				break
-
-			default:
-				return false
+		var Shape = this.getShape(item.shape)
+		if (Shape) {
+			new Shape(this, item)
 		}
-	}
-
-	Graph.prototype._createRectShape = function (item) {
-		let element = document.createElementNS(this._svgNS, 'rect')
-		element.setAttributeNS(null, 'x', item.x)
-		element.setAttributeNS(null, 'y', item.y)
-		element.setAttributeNS(null, 'width', item.width)
-		element.setAttributeNS(null, 'height', item.height)
-		element.setAttributeNS(null, 'fill', 'red')
-		this._svgElement.appendChild(element)
-		return element
 	}
 }
