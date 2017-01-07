@@ -15,7 +15,7 @@ Rect.prototype.init = function () {
 	util.setAttribute(this.element, 'y', this.data.y)
 	util.setAttribute(this.element, 'width', this.data.width)
 	util.setAttribute(this.element, 'height', this.data.height)
-	util.setAttribute(this.element, 'fill', 'red')
+	util.setAttribute(this.element, 'fill', util.randomRgb())
 	this.graph._svgElement.appendChild(this.element)
 }
 

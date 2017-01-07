@@ -1,14 +1,18 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Graph = factory());
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.Graph = factory());
 }(this, (function () { 'use strict';
 
 var randomInt = function (min, max) {
-	if ( min === void 0 ) min = 0;
-	if ( max === void 0 ) max = 1000;
+  if ( min === void 0 ) min = 0;
+  if ( max === void 0 ) max = 1000;
 
-	return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
+  return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
+};
+
+var randomRgb = function () {
+  return 'rgb(' + randomInt(0, 255) + ', ' + randomInt(0, 255) + ', '+ randomInt(0, 255) +')'
 };
 
 var error$1 = function (errorMsg) {
@@ -29,6 +33,7 @@ var setAttribute = function (element, attr, value) {
 
 var util = Object.freeze({
 	randomInt: randomInt,
+	randomRgb: randomRgb,
 	error: error$1,
 	createElement: createElement,
 	setAttribute: setAttribute
@@ -112,26 +117,33 @@ Rect.prototype.init = function () {
 	setAttribute(this.element, 'y', this.data.y);
 	setAttribute(this.element, 'width', this.data.width);
 	setAttribute(this.element, 'height', this.data.height);
-	setAttribute(this.element, 'fill', 'red');
+	setAttribute(this.element, 'fill', randomRgb());
 	this.graph._svgElement.appendChild(this.element);
 };
 
 function Circle (graph, data) {
-	this.data = data;
-	this.graph = graph;
-	this.init();
+  this.data = data;
+  this.graph = graph;
+  this.init();
 }
 
 /**
  * Require definition
  */
 Circle.prototype.init = function () {
-	this.element = createElement('circle');
-	setAttribute(this.element, 'cx', this.data.x);
-	setAttribute(this.element, 'cy', this.data.y);
-	setAttribute(this.element, 'r', this.data.r);
-	setAttribute(this.element, 'fill', 'blue');
-	this.graph._svgElement.appendChild(this.element);
+  var size = 0;
+  this.element = createElement('ellipse');
+
+  size = this.data.width ? this.data.width : this.data.height;
+  setAttribute(this.element, 'cx', this.data.x + size / 2);
+  setAttribute(this.element, 'rx', size / 2);
+
+  size = this.data.height ? this.data.height : this.data.width;
+  setAttribute(this.element, 'cy', this.data.y + size / 2);
+  setAttribute(this.element, 'ry', size / 2);
+
+  setAttribute(this.element, 'fill', randomRgb());
+  this.graph._svgElement.appendChild(this.element);
 };
 
 var shapes = {

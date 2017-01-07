@@ -1,5 +1,9 @@
 const randomInt = (min = 0, max = 1000) => {
-	return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
+  return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
 }
 
-export { randomInt }
+const randomRgb = () => {
+  return 'rgb(' + randomInt(0, 255) + ', ' + randomInt(0, 255) + ', '+ randomInt(0, 255) +')'
+}
+
+export { randomInt, randomRgb }
