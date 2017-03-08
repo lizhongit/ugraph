@@ -6,11 +6,11 @@ import { SVG_NS } from '../config/index'
  * @returns {*}
  */
 const createElement = (tagName) => {
-	return document.createElementNS(SVG_NS, tagName)
+  return document.createElementNS(SVG_NS, tagName)
 }
 
-const setAttribute = function (element, attr, value) {
-	element.setAttributeNS(null, attr, value)
+const setAttribute = function (element, attr, value, ns) {
+  element.setAttributeNS(ns, attr, value)
 }
 
 export { createElement, setAttribute }

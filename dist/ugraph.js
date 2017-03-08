@@ -1,7 +1,7 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.Graph = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.Graph = factory());
 }(this, (function () { 'use strict';
 
 var randomInt = function (min, max) {
@@ -15,18 +15,23 @@ var randomRgb = function () {
   return 'rgb(' + randomInt(0, 255) + ', ' + randomInt(0, 255) + ', '+ randomInt(0, 255) +')'
 };
 
-var error$1 = function (errorMsg) {
-	throw new Error(errorMsg)
+var error = function (errorMsg) {
+  throw new Error(errorMsg)
 };
 
 var SVG_NS = 'http://www.w3.org/2000/svg';
 
+/**
+ * Create tag
+ * @param tagName
+ * @returns {*}
+ */
 var createElement = function (tagName) {
-	return document.createElementNS(SVG_NS, tagName)
+  return document.createElementNS(SVG_NS, tagName)
 };
 
-var setAttribute = function (element, attr, value) {
-	element.setAttributeNS(null, attr, value);
+var setAttribute = function (element, attr, value, ns) {
+  element.setAttributeNS(ns, attr, value);
 };
 
 
@@ -34,7 +39,7 @@ var setAttribute = function (element, attr, value) {
 var util = Object.freeze({
 	randomInt: randomInt,
 	randomRgb: randomRgb,
-	error: error$1,
+	error: error,
 	createElement: createElement,
 	setAttribute: setAttribute
 });
@@ -48,58 +53,65 @@ var initMixin = function (Graph) {
 	 * @param option
 	 * @private
 	 */
-	Graph.prototype._init = function (element, option) {
-		if ( element === void 0 ) element = error('error: element must be a HTMLElement object');
-		if ( option === void 0 ) option = {};
+  Graph.prototype._init = function (element, option) {
+    if ( element === void 0 ) element = error('error: element must be a HTMLElement object');
+    if ( option === void 0 ) option = {};
 
-		this._element = element;
-		this._option = option;
+    this._element = element;
+    this._option = option;
 
-		if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
-			this._initElement();
-			this._initOption();
-		} else {
+    if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
+      this._initElement();
+      this._initOption();
+    } else {
 			// throw error and stop running script
-			if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
-				error$1('Can\'t into SVG element.');
-			} else {
-				error$1('Element must be a HTMLElement object.');
-			}
-		}
-	};
+      if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
+        error('Can\'t into SVG element.');
+      } else {
+        error('Element must be a HTMLElement object.');
+      }
+    }
+  };
 
-	Graph.prototype._initElement = function () {
+  Graph.prototype._initElement = function () {
 
 		// Check element position value of style
-		var position = this._element.style.position;
-		if (['absolute', 'relative'].indexOf(position) === -1) {
-			this._element.style.position = 'relative';
-		}
+    var position = this._element.style.position;
+    if (['absolute', 'relative'].indexOf(position) === -1) {
+      this._element.style.position = 'relative';
+    }
 
 		// Init element style
-		this._element.style.padding = 0;
+    this._element.style.padding = 0;
 
 		// Append svg to element
-		this._svgElement = createElement('svg');
-		setAttribute(this._svgElement, 'width', '100%');
-		setAttribute(this._svgElement, 'height', '100%');
-		this._svgElement.style.cssText = [
-			'padding: 0',
-			'left: 0',
-			'top: 0',
-			'width: 100%',
-			'height: 100%',
-			'position: absolute'
-		].join(';');
+    this._svgElement = createElement('svg');
+    setAttribute(this._svgElement, 'width', '100%');
+    setAttribute(this._svgElement, 'height', '100%');
+    this._svgElement.style.cssText = [
+      'padding: 0',
+      'left: 0',
+      'top: 0',
+      'width: 100%',
+      'height: 100%',
+      'position: absolute'
+    ].join(';');
 
-		this._element.appendChild(this._svgElement);
-	};
+    this._element.appendChild(this._svgElement);
+  };
 
-	Graph.prototype._initOption = function (option) {
-		if ( option === void 0 ) option = {};
+  Graph.prototype._initOption = function (option) {
+    if ( option === void 0 ) option = {};
 
-		this._option = option;
-	};
+    this._option = option;
+  };
+
+  Graph.prototype.clear = function () {
+    this._svgElement.innerHTML = '';
+		// this._svgElement.childNodes.forEach((node) => {
+		// 	this._svgElement.removeChild(node)
+		// })
+  };
 };
 
 function Rect (graph, data) {
@@ -113,10 +125,10 @@ function Rect (graph, data) {
  */
 Rect.prototype.init = function () {
 	this.element = createElement('rect');
-	setAttribute(this.element, 'x', this.data.x);
-	setAttribute(this.element, 'y', this.data.y);
-	setAttribute(this.element, 'width', this.data.width);
-	setAttribute(this.element, 'height', this.data.height);
+	setAttribute(this.element, 'x', this.data.x * this.graph.zoomFactor);
+	setAttribute(this.element, 'y', this.data.y * this.graph.zoomFactor);
+	setAttribute(this.element, 'width', this.data.width * this.graph.zoomFactor);
+	setAttribute(this.element, 'height', this.data.height * this.graph.zoomFactor);
 	setAttribute(this.element, 'fill', randomRgb());
 	this.graph._svgElement.appendChild(this.element);
 };
@@ -131,15 +143,17 @@ function Circle (graph, data) {
  * Require definition
  */
 Circle.prototype.init = function () {
-  var size = 0;
+  var size;
   this.element = createElement('ellipse');
 
   size = this.data.width ? this.data.width : this.data.height;
-  setAttribute(this.element, 'cx', this.data.x + size / 2);
+  size *= this.graph.zoomFactor;
+  setAttribute(this.element, 'cx', this.data.x * this.graph.zoomFactor + size / 2);
   setAttribute(this.element, 'rx', size / 2);
 
   size = this.data.height ? this.data.height : this.data.width;
-  setAttribute(this.element, 'cy', this.data.y + size / 2);
+  size *= this.graph.zoomFactor;
+  setAttribute(this.element, 'cy', this.data.y * this.graph.zoomFactor + size / 2);
   setAttribute(this.element, 'ry', size / 2);
 
   setAttribute(this.element, 'fill', randomRgb());
@@ -147,8 +161,8 @@ Circle.prototype.init = function () {
 };
 
 var shapes = {
-	rect: Rect,
-	circle: Circle
+  rect: Rect,
+  circle: Circle
 };
 
 
@@ -159,17 +173,17 @@ var shapeMixin = function (Graph) {
 	 * @param name
 	 * @param shape
 	 */
-	Graph.prototype.setShape = function (name, shape) {
-		shapes[name] = shape;
-	};
+  Graph.prototype.setShape = function (name, shape) {
+    shapes[name] = shape;
+  };
 
 	/**
 	 * Get shape by name
 	 * @param name
 	 */
-	Graph.prototype.getShape = function (name) {
-		return shapes[name]
-	};
+  Graph.prototype.getShape = function (name) {
+    return shapes[name]
+  };
 };
 
 /**
@@ -189,37 +203,40 @@ var warn = function (msg) {
  * Diff json
  * @type {{}}
  */
+// const state = {}
+
 var renderMixin = function (Graph) {
 
-	Graph.prototype._checkNodeData = function (node) {
-		return typeof node.x === 'number'
+  Graph.prototype._checkNodeData = function (node) {
+    return typeof node.x === 'number'
 			&& typeof node.y === 'number'
 			&& typeof node.width === 'number'
 			&& typeof node.height === 'number'
 			&& this.getShape(node.shape)
-	};
+  };
 
 	/**
 	 * Source from _json property
 	 */
-	Graph.prototype.render = function () {
-		var this$1 = this;
+  Graph.prototype.render = function () {
+    var this$1 = this;
 
+    this.clear();
 
 		// TODO nodes
-		if (Array.isArray(this._json.nodes)) {
-			this._json.nodes.filter(function (item) { return this$1._checkNodeData(item); }).forEach(function (item) {
-				this$1._createShape(item);
-			});
-		}
-	};
+    if (Array.isArray(this._json.nodes)) {
+      this._json.nodes.filter(function (item) { return this$1._checkNodeData(item); }).forEach(function (item) {
+        this$1._createShape(item);
+      });
+    }
+  };
 
-	Graph.prototype._createShape = function (item) {
-		var Shape = this.getShape(item.shape);
-		if (Shape) {
-			new Shape(this, item);
-		}
-	};
+  Graph.prototype._createShape = function (item) {
+    var Shape = this.getShape(item.shape);
+    if (Shape) {
+      new Shape(this, item);
+    }
+  };
 };
 
 var jsonMixin = function (Graph) {
@@ -266,19 +283,50 @@ var jsonMixin = function (Graph) {
 	};
 };
 
+var zoomMixin = function (Graph) {
+  var maxZoomFactor = 2;
+  var minZoomFactor = 0.1;
+  var zoomStep = 0.1;
+
+  Graph.prototype.zoomFactor = 1;
+
+  Graph.prototype.setMinZoomFactor = function (value) {
+    minZoomFactor = value;
+  };
+
+  Graph.prototype.getMinZoomFactor = function () {
+    return minZoomFactor
+  };
+
+	Graph.prototype.zoomOut = function () {
+    if (this.zoomFactor > minZoomFactor) {
+      this.zoomFactor -= zoomStep;
+      this.render();
+    }
+	};
+
+  Graph.prototype.zoomIn = function () {
+    if (this.zoomFactor < maxZoomFactor) {
+		  this.zoomFactor += zoomStep;
+      this.render();
+    }
+	};
+};
+
 function Graph (element, option) {
-	if (!(this instanceof Graph)) {
-		var msg = 'Graph is a constructor and should be called with the `new` keyword';
-		warn(msg);
+  if (!(this instanceof Graph)) {
+    var msg = 'Graph is a constructor and should be called with the `new` keyword';
+    warn(msg);
 		// error('Graph is a constructor and should be called with the `new` keyword')
-	}
-	this._init(element, option);
+  }
+  this._init(element, option);
 }
 
 initMixin(Graph);
 shapeMixin(Graph);
 renderMixin(Graph);
 jsonMixin(Graph);
+zoomMixin(Graph);
 
 Graph.util = util;
 

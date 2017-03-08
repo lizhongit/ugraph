@@ -1,0 +1,14 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height:  100%;
+}
+#graph {
+  width: 100%;
+  height: calc(100% - 50px);
+  border: 1px solid #CCC;
+}
+
+.toolbar {
+  padding: 10px;
+}

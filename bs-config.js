@@ -4,6 +4,9 @@ module.exports = {
     './examples/**/*'
   ],
   server: {
-    baseDir: './'
-  }
+    baseDir: './',
+    index: 'index.html'
+  },
+  browser: "google chrome",
+  startPath: "/examples/index.html"
 }
