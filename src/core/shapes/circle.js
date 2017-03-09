@@ -3,6 +3,7 @@ import * as util from '../util/index'
 function Circle (graph, data) {
   this.data = data
   this.graph = graph
+  this.style = util.parseStyle(this.data.style)
   this.init()
 }
 
@@ -23,7 +24,7 @@ Circle.prototype.init = function () {
   util.setAttribute(this.element, 'cy', this.data.y * this.graph.zoomFactor + size / 2)
   util.setAttribute(this.element, 'ry', size / 2)
 
-  util.setAttribute(this.element, 'fill', util.randomRgb())
+  util.setAttribute(this.element, 'fill', this.style.fillColor)
   this.graph._svgElement.appendChild(this.element)
 }
 

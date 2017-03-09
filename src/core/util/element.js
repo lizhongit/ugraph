@@ -13,4 +13,8 @@ const setAttribute = function (element, attr, value, ns) {
   element.setAttributeNS(ns, attr, value)
 }
 
-export { createElement, setAttribute }
+const getAttribute = function (element, attr, ns) {
+  element.getAttributeNS(ns, attr)
+}
+
+export { createElement, setAttribute, getAttribute }

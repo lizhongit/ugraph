@@ -13,17 +13,17 @@ export default (Graph) => {
     return minZoomFactor
   }
 
-	Graph.prototype.zoomOut = function () {
+  Graph.prototype.zoomOut = function () {
     if (this.zoomFactor > minZoomFactor) {
-      this.zoomFactor -= zoomStep
+      this.zoomFactor = Number((this.zoomFactor - zoomStep).toFixed(2))
       this.render()
     }
-	}
+  }
 
   Graph.prototype.zoomIn = function () {
     if (this.zoomFactor < maxZoomFactor) {
-		  this.zoomFactor += zoomStep
+      this.zoomFactor = Number((this.zoomFactor + zoomStep).toFixed(2))
       this.render()
     }
-	}
+  }
 }

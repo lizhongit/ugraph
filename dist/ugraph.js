@@ -21,17 +21,39 @@ var error = function (errorMsg) {
 
 var SVG_NS = 'http://www.w3.org/2000/svg';
 
-/**
- * Create tag
- * @param tagName
- * @returns {*}
- */
 var createElement = function (tagName) {
   return document.createElementNS(SVG_NS, tagName)
 };
 
 var setAttribute = function (element, attr, value, ns) {
   element.setAttributeNS(ns, attr, value);
+};
+
+var getAttribute = function (element, attr, ns) {
+  element.getAttributeNS(ns, attr);
+};
+
+var separateChar1 = ';';
+var separateChar2 = '=';
+
+var parseStyle = function (style) {
+  var o = {};
+
+  if (typeof style === 'string') {
+    style.split(separateChar1).forEach(function (item) {
+      var arr = item.split(separateChar2);
+      if (arr.length === 2) {
+        o[arr[0]] = arr[1];
+      }
+    });
+  }
+
+  return check(o)
+};
+
+var check = function (o) {
+  o.fillColor = o.fillColor ? o.fillColor : 'green';
+  return o
 };
 
 
@@ -41,7 +63,9 @@ var util = Object.freeze({
 	randomRgb: randomRgb,
 	error: error,
 	createElement: createElement,
-	setAttribute: setAttribute
+	setAttribute: setAttribute,
+	getAttribute: getAttribute,
+	parseStyle: parseStyle
 });
 
 var initMixin = function (Graph) {
@@ -112,30 +136,47 @@ var initMixin = function (Graph) {
 		// 	this._svgElement.removeChild(node)
 		// })
   };
+
+  Graph.prototype.getCenter = function () {
+    return {
+      x : this._svgElement.clientWidth / 2,
+      y : this._svgElement.clientHeight / 2
+    }
+  };
 };
 
 function Rect (graph, data) {
-	this.data = data;
-	this.graph = graph;
-	this.init();
+  this.data = data;
+  this.graph = graph;
+  this.style = parseStyle(this.data.style);
+  this.init();
 }
 
 /**
  * Require definition
  */
 Rect.prototype.init = function () {
-	this.element = createElement('rect');
-	setAttribute(this.element, 'x', this.data.x * this.graph.zoomFactor);
-	setAttribute(this.element, 'y', this.data.y * this.graph.zoomFactor);
-	setAttribute(this.element, 'width', this.data.width * this.graph.zoomFactor);
-	setAttribute(this.element, 'height', this.data.height * this.graph.zoomFactor);
-	setAttribute(this.element, 'fill', randomRgb());
-	this.graph._svgElement.appendChild(this.element);
+  this.element = createElement('rect');
+
+  var center = this.graph.getCenter();
+  var cx = this.data.x + this.data.width / 2;
+  var cy = this.data.y + this.data.height / 2;
+
+  var newX = (center.x - cx) * this.graph.zoomFactor + center.x;
+  var newY = (center.y - cy) * this.graph.zoomFactor + center.y;
+
+  setAttribute(this.element, 'x', newX);
+  setAttribute(this.element, 'y', newY);
+  setAttribute(this.element, 'width', this.data.width * this.graph.zoomFactor);
+  setAttribute(this.element, 'height', this.data.height * this.graph.zoomFactor);
+  setAttribute(this.element, 'fill', this.style.fillColor);
+  this.graph._svgElement.appendChild(this.element);
 };
 
 function Circle (graph, data) {
   this.data = data;
   this.graph = graph;
+  this.style = parseStyle(this.data.style);
   this.init();
 }
 
@@ -156,7 +197,7 @@ Circle.prototype.init = function () {
   setAttribute(this.element, 'cy', this.data.y * this.graph.zoomFactor + size / 2);
   setAttribute(this.element, 'ry', size / 2);
 
-  setAttribute(this.element, 'fill', randomRgb());
+  setAttribute(this.element, 'fill', this.style.fillColor);
   this.graph._svgElement.appendChild(this.element);
 };
 
@@ -244,43 +285,43 @@ var jsonMixin = function (Graph) {
 	/**
 	 * Require JSON string
 	 */
-	Graph.prototype.loadJson = function (json) {
+  Graph.prototype.loadJson = function (json) {
 		// TODO Inject loading tips
-		try {
-			this._json = JSON.parse(json);
-		} catch (e) {
-			warn(e);
-		} finally {
+    try {
+      this._json = JSON.parse(json);
+    } catch (e) {
+      warn(e);
+    } finally {
 			// TODO Inject loading tips
-		}
-	};
+    }
+  };
 
 	// TODO Insert node
 	/**
 	 * x, y, width, height, shape
 	 */
-	Graph.prototype.insertNode = function () {};
+  Graph.prototype.insertNode = function () {};
 
 	// TODO Insert line
-	Graph.prototype.insertLine = function () {};
+  Graph.prototype.insertLine = function () {};
 
-	Graph.prototype._json = {};
+  Graph.prototype._json = {};
 
-	Graph.prototype.getJson = function () {
-		var json = '';
+  Graph.prototype.getJson = function () {
+    var json = '';
 
 		// TODO Inject loading tips
 
-		try {
-			json = JSON.stringify(this._json);
-		} catch (e) {
-			warn(e);
-		} finally {
+    try {
+      json = JSON.stringify(this._json);
+    } catch (e) {
+      warn(e);
+    } finally {
 			// TODO Inject loading tips
-		}
+    }
 
-		return json
-	};
+    return json
+  };
 };
 
 var zoomMixin = function (Graph) {
@@ -298,19 +339,19 @@ var zoomMixin = function (Graph) {
     return minZoomFactor
   };
 
-	Graph.prototype.zoomOut = function () {
+  Graph.prototype.zoomOut = function () {
     if (this.zoomFactor > minZoomFactor) {
-      this.zoomFactor -= zoomStep;
+      this.zoomFactor = Number((this.zoomFactor - zoomStep).toFixed(2));
       this.render();
     }
-	};
+  };
 
   Graph.prototype.zoomIn = function () {
     if (this.zoomFactor < maxZoomFactor) {
-		  this.zoomFactor += zoomStep;
+      this.zoomFactor = Number((this.zoomFactor + zoomStep).toFixed(2));
       this.render();
     }
-	};
+  };
 };
 
 function Graph (element, option) {

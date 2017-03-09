@@ -64,4 +64,11 @@ export default (Graph) => {
 		// 	this._svgElement.removeChild(node)
 		// })
   }
+
+  Graph.prototype.getCenter = function () {
+    return {
+      x : this._svgElement.clientWidth / 2,
+      y : this._svgElement.clientHeight / 2
+    }
+  }
 }

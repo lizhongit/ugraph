@@ -82,8 +82,9 @@
 						y: random(0, maxHeight - nodeMax),
 						width: random(nodeMin, nodeMax),
 						height: random(nodeMin, nodeMax),
-						shape: random(0, 10) > 5 ? 'circle' : 'rect',
-						// style: 'fillColor'
+//						shape: random(0, 10) > 5 ? 'circle' : 'rect',
+						shape: 'rect',
+						style: 'fillColor=' + randomRgb()
 					});
 				}
 
