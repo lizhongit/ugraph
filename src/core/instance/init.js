@@ -17,6 +17,10 @@ export default (Graph) => {
     if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
       this._initElement()
       this._initOption()
+      this._initMouseRightOffset()
+      this._initMouseWheel()
+      // this.enableMouseRightOffset()
+      this._element.addEventListener('contextmenu', event => event.preventDefault())
     } else {
 			// throw error and stop running script
       if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {

@@ -87,6 +87,10 @@ var initMixin = function (Graph) {
     if (typeof element === 'object' && element instanceof HTMLElement && element.tagName !== 'TAG') {
       this._initElement();
       this._initOption();
+      this._initMouseRightOffset();
+      this._initMouseWheel();
+      // this.enableMouseRightOffset()
+      this._element.addEventListener('contextmenu', function (event) { return event.preventDefault(); });
     } else {
 			// throw error and stop running script
       if (element instanceof HTMLElement && element.tagName.toLowerCase() === 'tag') {
@@ -158,17 +162,25 @@ function Rect (graph, data) {
 Rect.prototype.init = function () {
   this.element = createElement('rect');
 
+  var scale = this.graph.getZoomScale();
   var center = this.graph.getCenter();
-  var cx = this.data.x + this.data.width / 2;
-  var cy = this.data.y + this.data.height / 2;
 
-  var newX = (center.x - cx) * this.graph.zoomFactor + center.x;
-  var newY = (center.y - cy) * this.graph.zoomFactor + center.y;
+  // let cx = this.data.x - this.graph.offset.x + this.data.width / 2
+  // let cy = this.data.y - this.graph.offset.y + this.data.height / 2
+
+  var cx = (this.data.x + this.data.width / 2) - this.graph.offset.x;
+  var cy = (this.data.y + this.data.height / 2) - this.graph.offset.y;
+
+  var newX = (center.x - cx) * scale + center.x;
+  var newY = (center.y - cy) * scale + center.y;
+
+  // let newX = (center.x - cx) * scale + center.x
+  // let newY = (center.y - cy) * scale + center.y
 
   setAttribute(this.element, 'x', newX);
   setAttribute(this.element, 'y', newY);
-  setAttribute(this.element, 'width', this.data.width * this.graph.zoomFactor);
-  setAttribute(this.element, 'height', this.data.height * this.graph.zoomFactor);
+  setAttribute(this.element, 'width', this.data.width * scale);
+  setAttribute(this.element, 'height', this.data.height * scale);
   setAttribute(this.element, 'fill', this.style.fillColor);
   this.graph._svgElement.appendChild(this.element);
 };
@@ -325,32 +337,106 @@ var jsonMixin = function (Graph) {
 };
 
 var zoomMixin = function (Graph) {
-  var maxZoomFactor = 2;
-  var minZoomFactor = 0.1;
-  var zoomStep = 0.1;
+  var maxZoomScale = 2000;
+  var minZoomScale = 0.03;
+  var zoomScale = 1;
 
-  Graph.prototype.zoomFactor = 1;
+  Graph.prototype.zoomFactor = 1.2;
 
-  Graph.prototype.setMinZoomFactor = function (value) {
-    minZoomFactor = value;
+  Graph.prototype.setZoomScale = function (value) {
+    zoomScale = value;
   };
 
-  Graph.prototype.getMinZoomFactor = function () {
-    return minZoomFactor
+  Graph.prototype.getZoomScale = function () {
+    return zoomScale
   };
 
   Graph.prototype.zoomOut = function () {
-    if (this.zoomFactor > minZoomFactor) {
-      this.zoomFactor = Number((this.zoomFactor - zoomStep).toFixed(2));
+    if (zoomScale > minZoomScale) {
+      zoomScale = Number((zoomScale /= this.zoomFactor).toFixed(2));
       this.render();
     }
   };
 
   Graph.prototype.zoomIn = function () {
-    if (this.zoomFactor < maxZoomFactor) {
-      this.zoomFactor = Number((this.zoomFactor + zoomStep).toFixed(2));
+    if (zoomScale < maxZoomScale) {
+      zoomScale = Number((zoomScale *= this.zoomFactor).toFixed(2));
       this.render();
     }
+  };
+};
+
+var mouseMixin = function (Graph) {
+
+  var isEnableMouseRightOffset = true;
+  var isEnableMouseWheel = true;
+
+  Graph.prototype.offset = {
+    x: 0,
+    y: 0
+  };
+
+  Graph.prototype._initMouseRightOffset = function () {
+    var this$1 = this;
+
+    var triggerPoint = {
+      x: 0,
+      y: 0
+    };
+
+    var isMouseDown = false;
+
+    this._element.addEventListener('mousedown', function (evt) {
+      isMouseDown = true;
+      triggerPoint.x = evt.x;
+      triggerPoint.y = evt.y;
+    });
+
+    this._element.addEventListener('mousemove', function (evt) {
+      if (isMouseDown && isEnableMouseRightOffset) {
+        var scale = this$1.getZoomScale();
+
+        this$1.offset.x += 1 / scale * (evt.x - triggerPoint.x);
+        this$1.offset.y += 1 / scale * (evt.y - triggerPoint.y);
+        triggerPoint.x = evt.x;
+        triggerPoint.y = evt.y;
+        this$1.render();
+      }
+    });
+
+    this._element.addEventListener('mouseup', function () {
+      if (isMouseDown) {
+        isMouseDown = false;
+        triggerPoint.x = 0;
+        triggerPoint.y = 0;
+      }
+    });
+  };
+
+  Graph.prototype._initMouseWheel = function () {
+    var this$1 = this;
+
+    this._element.addEventListener('mousewheel', function (evt) {
+      if (isEnableMouseWheel) {
+        if (evt.deltaY > 0) {
+          this$1.zoomOut();
+        } else {
+          this$1.zoomIn();
+        }
+      }
+    });
+  };
+
+  Graph.prototype.enableMouseWheel = function () {
+
+  };
+
+  Graph.prototype.enableMouseRightOffset = function () {
+    isEnableMouseRightOffset = true;
+  };
+
+  Graph.prototype.disableMouseRightOffset = function () {
+    isEnableMouseRightOffset = false;
   };
 };
 
@@ -368,6 +454,7 @@ shapeMixin(Graph);
 renderMixin(Graph);
 jsonMixin(Graph);
 zoomMixin(Graph);
+mouseMixin(Graph);
 
 Graph.util = util;
 

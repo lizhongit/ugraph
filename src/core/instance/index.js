@@ -5,6 +5,7 @@ import { warn } from '../util/console'
 import renderMixin from './render'
 import jsonMixin from './json'
 import zoomMixin from './zoom'
+import mouseMixin from './mouse'
 
 function Graph (element, option) {
   if (!(this instanceof Graph)) {
@@ -20,5 +21,6 @@ shapeMixin(Graph)
 renderMixin(Graph)
 jsonMixin(Graph)
 zoomMixin(Graph)
+mouseMixin(Graph)
 
 export default Graph
