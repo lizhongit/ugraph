@@ -75,4 +75,8 @@ export default (Graph) => {
       y : this._svgElement.clientHeight / 2
     }
   }
+
+  Graph.prototype.setBackgroundImage = function (imageUrl) {
+    this._svgElement.style.backgroundImage = 'url(' + imageUrl + ')'
+  }
 }

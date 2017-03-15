@@ -26,4 +26,11 @@ export default (Graph) => {
       this.render()
     }
   }
+
+  Graph.prototype.zoomActual = function () {
+    zoomScale = 1
+    this.offset.x = 0
+    this.offset.y = 0
+    this.render()
+  }
 }

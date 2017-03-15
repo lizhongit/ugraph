@@ -147,6 +147,10 @@ var initMixin = function (Graph) {
       y : this._svgElement.clientHeight / 2
     }
   };
+
+  Graph.prototype.setBackgroundImage = function (imageUrl) {
+    this._svgElement.style.backgroundImage = 'url(' + imageUrl + ')';
+  };
 };
 
 function Rect (graph, data) {
@@ -165,17 +169,11 @@ Rect.prototype.init = function () {
   var scale = this.graph.getZoomScale();
   var center = this.graph.getCenter();
 
-  // let cx = this.data.x - this.graph.offset.x + this.data.width / 2
-  // let cy = this.data.y - this.graph.offset.y + this.data.height / 2
+  var cx = (this.data.x + this.data.width / 2) + this.graph.offset.x;
+  var cy = (this.data.y + this.data.height / 2) + this.graph.offset.y;
 
-  var cx = (this.data.x + this.data.width / 2) - this.graph.offset.x;
-  var cy = (this.data.y + this.data.height / 2) - this.graph.offset.y;
-
-  var newX = (center.x - cx) * scale + center.x;
-  var newY = (center.y - cy) * scale + center.y;
-
-  // let newX = (center.x - cx) * scale + center.x
-  // let newY = (center.y - cy) * scale + center.y
+  var newX = center.x - (center.x - cx) * scale;
+  var newY = center.y - (center.y - cy) * scale;
 
   setAttribute(this.element, 'x', newX);
   setAttribute(this.element, 'y', newY);
@@ -196,18 +194,28 @@ function Circle (graph, data) {
  * Require definition
  */
 Circle.prototype.init = function () {
-  var size;
+  var size, cx, cy, newX, newY;
   this.element = createElement('ellipse');
 
+  var scale = this.graph.getZoomScale();
+  var center = this.graph.getCenter();
+
   size = this.data.width ? this.data.width : this.data.height;
-  size *= this.graph.zoomFactor;
-  setAttribute(this.element, 'cx', this.data.x * this.graph.zoomFactor + size / 2);
-  setAttribute(this.element, 'rx', size / 2);
+
+  cx = (this.data.x + this.data.width / 2) + this.graph.offset.x;
+
+  newX = center.x - (center.x - cx) * scale;
+
+  setAttribute(this.element, 'cx', newX);
+  setAttribute(this.element, 'rx', size * scale / 2);
 
   size = this.data.height ? this.data.height : this.data.width;
-  size *= this.graph.zoomFactor;
-  setAttribute(this.element, 'cy', this.data.y * this.graph.zoomFactor + size / 2);
-  setAttribute(this.element, 'ry', size / 2);
+
+  cy = (this.data.y + this.data.height / 2) + this.graph.offset.y;
+  newY = center.y - (center.y - cy) * scale;
+
+  setAttribute(this.element, 'cy', newY);
+  setAttribute(this.element, 'ry', size * scale / 2);
 
   setAttribute(this.element, 'fill', this.style.fillColor);
   this.graph._svgElement.appendChild(this.element);
@@ -363,6 +371,13 @@ var zoomMixin = function (Graph) {
       zoomScale = Number((zoomScale *= this.zoomFactor).toFixed(2));
       this.render();
     }
+  };
+
+  Graph.prototype.zoomActual = function () {
+    zoomScale = 1;
+    this.offset.x = 0;
+    this.offset.y = 0;
+    this.render();
   };
 };
 

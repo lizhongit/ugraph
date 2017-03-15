@@ -10,6 +10,7 @@
 	<div class="toolbar">
 		<button onclick="zoomOut()">Zoom Out</button>
 		<button onclick="zoomIn()">Zoom In</button>
+		<button onclick="zoomActual()">Zoom Actual</button>
 	</div>
 	<div id="graph"></div>
 
@@ -32,6 +33,10 @@
 		function zoomIn() {
 			graph.zoomIn();
 		}
+
+		function zoomActual() {
+        graph.zoomActual();
+    }
 
 		var random = function (min, max) {
 			return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
@@ -82,20 +87,35 @@
 						y: random(0, maxHeight - nodeMax),
 						width: random(nodeMin, nodeMax),
 						height: random(nodeMin, nodeMax),
-//						shape: random(0, 10) > 5 ? 'circle' : 'rect',
-						shape: 'rect',
+						shape: random(0, 10) > 5 ? 'circle' : 'rect',
+            value: 'Text',
 						style: 'fillColor=' + randomRgb()
 					});
 				}
 
+        nodes.push({
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 200,
+          shape: 'circle',
+          value: 'Text',
+          style: 'fillColor=red'
+        });
+
 				json.nodes = nodes;				
 			})();
+
+
+      // Set background image
+      graph.setBackgroundImage('./images/grid_bg.png');
 
 		  // Load text json format
 		  graph.loadJson(JSON.stringify(json));
 
 		  // Render graph
 		  graph.render();
+
 	  };
 	</script>
 </body>
