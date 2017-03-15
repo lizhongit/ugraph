@@ -16,18 +16,18 @@ git clone git@github.com:lizhong8532/ugraph.git
 And open the terminal in the source root
 
 - Install lite-server command
-```shell
-# npm i -g lite-server
+```bash
+npm i -g lite-server
 ```
 Mac users need sudo permission of best
 
 For Mac
-```shell
-# sudo npm i -g lite-server 
+```bash
+sudo npm i -g lite-server 
 ```
 - Start lite-server service
-```shell
-# lite-server
+```bash
+lite-server
 ```
 It should be auto open Chrome browser and show the example.
 
