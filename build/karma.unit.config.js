@@ -3,18 +3,25 @@
 let base = require('./karma.base.config')
 
 module.exports = function (config) {
-	config.set(Object.assign(base, {
 
-		reporters: ['progress'],
+  let browsers = ['PhantomJS', 'Chrome', 'Safari']
+
+  if (process.env.TRAVIS) {
+    browsers = ['Chrome_travis_ci', 'PhantomJS']
+  }
+
+  config.set(Object.assign(base, {
+
+    reporters: ['progress'],
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['PhantomJS', 'Chrome', 'Safari'],
+    browsers: browsers,
 
 		// level of logging
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
+    logLevel: config.LOG_INFO,
 
-		singleRun: true
-	}))
+    singleRun: true
+  }))
 }
