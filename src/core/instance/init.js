@@ -1,5 +1,6 @@
 import * as util from '../util/index'
 import { error } from '../util/error'
+import { SVG_NS } from '../config/index'
 
 export default (Graph) => {
 
@@ -55,6 +56,7 @@ export default (Graph) => {
       'position: absolute'
     ].join(';')
 
+    this._svgElement.setAttribute('xmlns', SVG_NS)
     this._element.appendChild(this._svgElement)
   }
 

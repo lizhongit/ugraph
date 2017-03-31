@@ -49,7 +49,14 @@ var graph = new Graph(document.querySelector('#u-graph'));
 
 ## API
 
-- `zoomOutI()` 
+- `exportSvg() / exportPng() / exportJson()` 
+return an `Export` Object, Has two API of the Object
+    - `toString()` return string
+    - `toFile([fileName])` Save as files
+        - `fileName` If want to definition for save as files name
+    
+
+- `zoomOut()` 
 Zoom out
  
 - `zoomIn()` 
@@ -93,4 +100,4 @@ Current support all the shapes in the list
 - `circle`
 
 ## License
-[MIT](https://opensource.org/licenses/MIT)
+uGraph is licensed under the [MIT License](https://opensource.org/licenses/MIT)

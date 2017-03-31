@@ -21,6 +21,11 @@ var error = function (errorMsg) {
 
 var SVG_NS = 'http://www.w3.org/2000/svg';
 
+/**
+ * Create tag
+ * @param tagName
+ * @returns {*}
+ */
 var createElement = function (tagName) {
   return document.createElementNS(SVG_NS, tagName)
 };
@@ -56,6 +61,23 @@ var check = function (o) {
   return o
 };
 
+var prefixFillNumber = function (number) {
+  return number >= 10 ? number : '0' + String(number)
+};
+
+var getDateFormat = function () {
+  var d = new Date();
+  var f = prefixFillNumber;
+  return [
+    d.getFullYear(),
+    f(d.getMonth() + 1),
+    f(d.getDate()),
+    f(d.getHours()),
+    f(d.getMinutes()),
+    f(d.getSeconds())
+  ].join('_')
+};
+
 
 
 var util = Object.freeze({
@@ -65,7 +87,8 @@ var util = Object.freeze({
 	createElement: createElement,
 	setAttribute: setAttribute,
 	getAttribute: getAttribute,
-	parseStyle: parseStyle
+	parseStyle: parseStyle,
+	getDateFormat: getDateFormat
 });
 
 var initMixin = function (Graph) {
@@ -125,6 +148,7 @@ var initMixin = function (Graph) {
       'position: absolute'
     ].join(';');
 
+    this._svgElement.setAttribute('xmlns', SVG_NS);
     this._element.appendChild(this._svgElement);
   };
 
@@ -254,11 +278,6 @@ var shapeMixin = function (Graph) {
 var warn = function (msg) {
 	console.warn(msg);
 };
-
-/**
- * log
- * @param msg
- */
 
 /**
  * Diff json
@@ -455,6 +474,59 @@ var mouseMixin = function (Graph) {
   };
 };
 
+var _a = document.createElement('a');
+var _canvas = document.createElement('canvas');
+
+var returns = function (str, prefix, ext, w, h) {
+  var o = {};
+  o.toString = function () {
+    return str
+  };
+  o.toFile = function (fileName) {
+    var name = fileName ? fileName : 'ugraph_export_' + getDateFormat() + '.' + ext;
+
+    if (ext === 'png') {
+      _canvas.width = w;
+      _canvas.height = h;
+      var context = _canvas.getContext('2d');
+      var image = new Image;
+      image.onload = function() {
+        context.drawImage(image, 0, 0);
+        _a.download = name;
+        _a.href = _canvas.toDataURL('image/' + ext);
+        _a.click();
+      };
+      image.src = prefix + str;
+    } else {
+      if (ext === 'svg') {
+        str = '<?xml version="1.0" encoding="UTF-8"?>' + str;
+      }
+      _a.href = 'data:' + prefix + str;
+      _a.download = name;
+      _a.click();
+    }
+  };
+  return o
+};
+
+var ioMixin = function (Graph) {
+
+  Graph.prototype.exportJson = function () {
+    var json = JSON.stringify(this._json);
+    return returns(json, 'text/json;charset=utf-8,', 'json')
+  };
+
+  Graph.prototype.exportSvg = function () {
+    return returns(this._svgElement.outerHTML, 'text/svg;charset=utf-8,', 'svg')
+  };
+
+  Graph.prototype.exportPng = function () {
+    var s = window.btoa(new XMLSerializer().serializeToString(this._svgElement));
+    return returns(s, 'data:image/svg+xml;base64,', 'png', this._svgElement.clientWidth, this._svgElement.clientHeight)
+  };
+};
+
+// import { error } from '../util/error'
 function Graph (element, option) {
   if (!(this instanceof Graph)) {
     var msg = 'Graph is a constructor and should be called with the `new` keyword';
@@ -470,6 +542,7 @@ renderMixin(Graph);
 jsonMixin(Graph);
 zoomMixin(Graph);
 mouseMixin(Graph);
+ioMixin(Graph);
 
 Graph.util = util;
 

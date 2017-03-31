@@ -11,6 +11,9 @@
 		<button onclick="zoomOut()">Zoom Out</button>
 		<button onclick="zoomIn()">Zoom In</button>
 		<button onclick="zoomActual()">Zoom Actual</button>
+		<button onclick="exportJson()">Export JSON</button>
+		<button onclick="exportSvg()">Export SVG</button>
+		<button onclick="exportPng()">Export PNG</button>
 	</div>
 	<div id="graph"></div>
 
@@ -35,7 +38,19 @@
 		}
 
 		function zoomActual() {
-        graph.zoomActual();
+      graph.zoomActual();
+    }
+
+    function exportJson() {
+      graph.exportJson().toFile();
+    }
+
+    function exportSvg() {
+      graph.exportSvg().toFile();
+    }
+
+    function exportPng() {
+      graph.exportPng().toFile();
     }
 
 		var random = function (min, max) {
