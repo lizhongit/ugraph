@@ -7,7 +7,7 @@ module.exports = function (config) {
   let browsers = ['PhantomJS', 'Chrome', 'Safari']
 
   if (process.env.TRAVIS) {
-    browsers = ['Chrome_travis_ci', 'PhantomJS']
+    browsers = ['PhantomJS']
   }
 
   config.set(Object.assign(base, {
