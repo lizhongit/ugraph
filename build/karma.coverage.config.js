@@ -3,26 +3,26 @@
 let base = require('./karma.base.config')
 
 module.exports = function (config) {
-	config.set(Object.assign(base, {
+  config.set(Object.assign(base, {
 
-		reporters: ['coverage'],
+    reporters: ['coverage'],
 
-		coverageReporter: {
-			dir: '../coverage',
-			reporters: [
+    coverageReporter: {
+      dir: '../coverage',
+      reporters: [
 				{ type: 'text-summary', subdir: '.' },
 				{ type: 'html', subdir: 'report-html' }
-			]
-		},
+      ]
+    },
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['PhantomJS'],
+    browsers: ['PhantomJS'],
 
 		// level of logging
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.ERROR,
+    logLevel: config.ERROR,
 
-		singleRun: true
-	}))
+    singleRun: true
+  }))
 }

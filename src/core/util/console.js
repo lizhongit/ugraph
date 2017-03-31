@@ -3,7 +3,7 @@
  * @param msg
  */
 const warn = (msg) => {
-	console.warn(msg)
+  console.warn(msg)
 }
 
 /**
@@ -11,7 +11,7 @@ const warn = (msg) => {
  * @param msg
  */
 const log = (msg) => {
-	console.log(msg)
+  console.log(msg)
 }
 
 export { warn, log }

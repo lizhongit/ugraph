@@ -3,18 +3,18 @@
 let base = require('./karma.base.config')
 
 module.exports = function (config) {
-	config.set(Object.assign(base, {
+  config.set(Object.assign(base, {
 
-		reporters: ['progress'],
+    reporters: ['progress'],
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['Chrome'],
+    browsers: ['Chrome'],
 
 		// level of logging
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_WARN,
+    logLevel: config.LOG_WARN,
 
-		singleRun: false
-	}))
+    singleRun: false
+  }))
 }
