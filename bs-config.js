@@ -7,6 +7,6 @@ module.exports = {
     baseDir: './',
     index: 'index.html'
   },
-  browser: "google chrome",
-  startPath: "/examples/index.html"
+  browser: 'google chrome',
+  startPath: '/examples/index.html'
 }

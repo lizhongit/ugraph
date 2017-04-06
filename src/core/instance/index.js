@@ -7,6 +7,7 @@ import jsonMixin from './json'
 import zoomMixin from './zoom'
 import mouseMixin from './mouse'
 import ioMixin from './io'
+import eventMixin from './event'
 
 function Graph (element, option) {
   if (!(this instanceof Graph)) {
@@ -24,5 +25,6 @@ jsonMixin(Graph)
 zoomMixin(Graph)
 mouseMixin(Graph)
 ioMixin(Graph)
+eventMixin(Graph)
 
 export default Graph

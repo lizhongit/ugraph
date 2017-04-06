@@ -21,11 +21,6 @@ var error = function (errorMsg) {
 
 var SVG_NS = 'http://www.w3.org/2000/svg';
 
-/**
- * Create tag
- * @param tagName
- * @returns {*}
- */
 var createElement = function (tagName) {
   return document.createElementNS(SVG_NS, tagName)
 };
@@ -276,7 +271,16 @@ var shapeMixin = function (Graph) {
  * @param msg
  */
 var warn = function (msg) {
-	console.warn(msg);
+  console.warn(msg);
+};
+
+/**
+ * log
+ * @param msg
+ */
+var error$1 = function (msg) {
+  console.error(msg);
+  throw new Error(msg)
 };
 
 /**
@@ -526,7 +530,78 @@ var ioMixin = function (Graph) {
   };
 };
 
-// import { error } from '../util/error'
+var Event = function Event () {
+  this.isStop = false;
+};
+Event.prototype.stop = function stop () {
+  this.isStop = true;
+};
+
+var EventCursor = function EventCursor (arr, index, fn) {
+  this.arr = arr;
+  this.index = index;
+  this.fn = fn;
+};
+
+EventCursor.prototype.remove = function remove () {
+  this.fn._disabeld = true;
+};
+
+EventCursor.prototype.restore = function restore () {
+  this.fn._disabeld = false;
+};
+
+var triggerEvent = function (eventName) {
+  var this$1 = this;
+
+  if (eventListens[eventName]) {
+    var evt = new Event;
+    eventListens[eventName].fns.forEach(function (item) {
+      if (!evt.isStop && !item._disabeld) {
+        item.fn.apply(this$1, [evt]);
+      }
+    });
+  }
+};
+
+var EVENT_NAMES = {
+  CLICK: 'click'
+};
+
+var eventListens = {};
+
+for (var name in EVENT_NAMES) {
+  eventListens[EVENT_NAMES[name]] = {
+    fns: []
+  };
+}
+
+var eventMixin = function (Graph) {
+
+
+  Graph.prototype.EVENT = EVENT_NAMES;
+
+  Graph.prototype.eventTrigger = function (eventName) {
+    if ( eventName === void 0 ) eventName = '';
+
+    triggerEvent.apply(this, [eventName]);
+  };
+
+  Graph.prototype.addEventListener = function (eventName, fn) {
+    if (eventListens[eventName] && typeof fn === 'function') {
+      var item = { fn:fn };
+      eventListens[eventName].fns.push(item);
+      return new EventCursor(eventListens[eventName].fns, eventListens[eventName].fns.length - 1, item)
+    } else {
+      if (!eventListens[eventName]) {
+        error$1('Unknown this event name:' + eventName + ', please see the EVENT definition.');
+      } else if (typeof fn !== 'function') { (
+        error$1('The second param must be a function.')
+      ); }
+    }
+  };
+};
+
 function Graph (element, option) {
   if (!(this instanceof Graph)) {
     var msg = 'Graph is a constructor and should be called with the `new` keyword';
@@ -543,6 +618,7 @@ jsonMixin(Graph);
 zoomMixin(Graph);
 mouseMixin(Graph);
 ioMixin(Graph);
+eventMixin(Graph);
 
 Graph.util = util;
 

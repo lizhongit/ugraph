@@ -14,4 +14,9 @@ const log = (msg) => {
   console.log(msg)
 }
 
-export { warn, log }
+const error = (msg) => {
+  console.error(msg)
+  throw new Error(msg)
+}
+
+export { warn, log, error }
