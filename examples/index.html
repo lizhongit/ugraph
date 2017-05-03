@@ -96,7 +96,7 @@
 				var maxHeight = document.body.clientHeight;
 				var nodeMax = 100;
 				var nodeMin = 10;
-				for (var i = 0; i < 100; i++) {
+				for (var i = 0; i < 500; i++) {
 					nodes.push({
 						x: random(0, maxWidth - nodeMax),
 						y: random(0, maxHeight - nodeMax),
@@ -108,15 +108,15 @@
 					});
 				}
 
-        nodes.push({
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 200,
-          shape: 'circle',
-          value: 'Text',
-          style: 'fillColor=red'
-        });
+//        nodes.push({
+//          x: 0,
+//          y: 0,
+//          width: 100,
+//          height: 200,
+//          shape: 'circle',
+//          value: 'Text',
+//          style: 'fillColor=red'
+//        });
 
 				json.nodes = nodes;				
 			})();

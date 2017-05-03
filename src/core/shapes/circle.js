@@ -38,4 +38,38 @@ Circle.prototype.init = function () {
   this.graph._svgElement.appendChild(this.element)
 }
 
+Circle.prototype.getHtml = function () {
+  let html = []
+
+  let size, cx, cy, newX, newY
+  html.push('<ellipse')
+
+  let scale = this.graph.getZoomScale()
+  let center = this.graph.getCenter()
+
+  size = this.data.width ? this.data.width : this.data.height
+
+  cx = (this.data.x + this.data.width / 2) + this.graph.offset.x
+
+  newX = center.x - (center.x - cx) * scale
+
+  html.push('cx=' + newX)
+  html.push('rx=' + size * scale / 2)
+
+  size = this.data.height ? this.data.height : this.data.width
+
+  cy = (this.data.y + this.data.height / 2) + this.graph.offset.y
+  newY = center.y - (center.y - cy) * scale
+
+  html.push('cy=' + newY)
+  html.push('ry=' + size * scale / 2)
+
+  html.push('fill="' + this.style.fillColor + '"')
+  html.push('_id="' + this.data.id + '"')
+
+  html.push('></ellipse>')
+
+  return html.join(' ')
+}
+
 export { Circle }

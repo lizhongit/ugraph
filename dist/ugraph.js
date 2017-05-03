@@ -176,7 +176,7 @@ function Rect (graph, data) {
   this.data = data;
   this.graph = graph;
   this.style = parseStyle(this.data.style);
-  this.init();
+  // this.init()
 }
 
 /**
@@ -200,6 +200,29 @@ Rect.prototype.init = function () {
   setAttribute(this.element, 'height', this.data.height * scale);
   setAttribute(this.element, 'fill', this.style.fillColor);
   this.graph._svgElement.appendChild(this.element);
+};
+
+Rect.prototype.getHtml = function () {
+  var html = [];
+
+  var scale = this.graph.getZoomScale();
+  var center = this.graph.getCenter();
+
+  var cx = (this.data.x + this.data.width / 2) + this.graph.offset.x;
+  var cy = (this.data.y + this.data.height / 2) + this.graph.offset.y;
+
+  var newX = center.x - (center.x - cx) * scale;
+  var newY = center.y - (center.y - cy) * scale;
+  html.push('<rect');
+  html.push('x=' + newX);
+  html.push('y=' + newY);
+  html.push('width=' + this.data.width * scale);
+  html.push('height=' + this.data.width * scale);
+  html.push('fill="' + this.style.fillColor + '"');
+  html.push('_id="' + this.data.id + '"');
+  html.push('></rect>');
+
+  return html.join(' ')
 };
 
 function Circle (graph, data) {
@@ -238,6 +261,40 @@ Circle.prototype.init = function () {
 
   setAttribute(this.element, 'fill', this.style.fillColor);
   this.graph._svgElement.appendChild(this.element);
+};
+
+Circle.prototype.getHtml = function () {
+  var html = [];
+
+  var size, cx, cy, newX, newY;
+  html.push('<ellipse');
+
+  var scale = this.graph.getZoomScale();
+  var center = this.graph.getCenter();
+
+  size = this.data.width ? this.data.width : this.data.height;
+
+  cx = (this.data.x + this.data.width / 2) + this.graph.offset.x;
+
+  newX = center.x - (center.x - cx) * scale;
+
+  html.push('cx=' + newX);
+  html.push('rx=' + size * scale / 2);
+
+  size = this.data.height ? this.data.height : this.data.width;
+
+  cy = (this.data.y + this.data.height / 2) + this.graph.offset.y;
+  newY = center.y - (center.y - cy) * scale;
+
+  html.push('cy=' + newY);
+  html.push('ry=' + size * scale / 2);
+
+  html.push('fill="' + this.style.fillColor + '"');
+  html.push('_id="' + this.data.id + '"');
+
+  html.push('></ellipse>');
+
+  return html.join(' ')
 };
 
 var shapes = {
@@ -291,6 +348,11 @@ var error$1 = function (msg) {
 
 var renderMixin = function (Graph) {
 
+  Graph.prototype._svgHtml = [];
+
+  Graph.prototype._model = {};
+  Graph.prototype._autoindexId = 0;
+
   Graph.prototype._checkNodeData = function (node) {
     return typeof node.x === 'number'
 			&& typeof node.y === 'number'
@@ -306,12 +368,22 @@ var renderMixin = function (Graph) {
     var this$1 = this;
 
     this.clear();
+    this._svgHtml = [];
 
 		// TODO nodes
     if (Array.isArray(this._json.nodes)) {
       this._json.nodes.filter(function (item) { return this$1._checkNodeData(item); }).forEach(function (item) {
-        this$1._createShape(item);
+
+        item.id = !item.id || this$1._model[item.id] ? String(++this$1._autoindexId) : item.id;
+        this$1._autoindexId = Number(this$1._autoindexId);
+
+        var Shape = this$1.getShape(item.shape);
+        if (Shape) {
+          this$1._svgHtml.push((new Shape(this$1, item).getHtml()));
+        }
       });
+
+      this._svgElement.innerHTML = this._svgHtml.join('');
     }
   };
 

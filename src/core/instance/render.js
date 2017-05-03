@@ -6,6 +6,11 @@
 
 export default (Graph) => {
 
+  Graph.prototype._svgHtml = []
+
+  Graph.prototype._model = {}
+  Graph.prototype._autoindexId = 0
+
   Graph.prototype._checkNodeData = function (node) {
     return typeof node.x === 'number'
 			&& typeof node.y === 'number'
@@ -19,12 +24,22 @@ export default (Graph) => {
 	 */
   Graph.prototype.render = function () {
     this.clear()
+    this._svgHtml = []
 
 		// TODO nodes
     if (Array.isArray(this._json.nodes)) {
       this._json.nodes.filter((item) => this._checkNodeData(item)).forEach((item) => {
-        this._createShape(item)
+
+        item.id = !item.id || this._model[item.id] ? String(++this._autoindexId) : item.id
+        this._autoindexId = Number(this._autoindexId)
+
+        var Shape = this.getShape(item.shape)
+        if (Shape) {
+          this._svgHtml.push((new Shape(this, item).getHtml()))
+        }
       })
+
+      this._svgElement.innerHTML = this._svgHtml.join('')
     }
   }
 
