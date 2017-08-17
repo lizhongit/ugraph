@@ -4,7 +4,7 @@ export default (Graph) => {
 
   }
 
-  Graph.prototype.setSelection = function (arr) {
+  Graph.prototype.setSelections = function (arr) {
 
   }
 
