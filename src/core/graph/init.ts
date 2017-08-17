@@ -11,7 +11,7 @@ export default (Graph) => {
 	 * @param option
 	 * @private
 	 */
-  Graph.prototype._init = function (element = error('error: element must be a HTMLElement object'), option = {}) {
+  Graph.prototype._init = function (element: Element = error('error: element must be a HTMLElement object'), option = {}) {
     this._element = element
     this._option = option
 

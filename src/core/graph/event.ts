@@ -1,6 +1,8 @@
 import { error } from '../util/console'
 
 class Event {
+  isStop: boolean
+
   constructor () {
     this.isStop = false
   }
@@ -9,7 +11,16 @@ class Event {
   }
 }
 
+interface EventCursorCallBack {
+  ()
+  _disabeld: boolean
+}
+
 class EventCursor {
+  arr: any[]
+  index: number
+  fn: EventCursorCallBack
+
   constructor (arr, index, fn) {
     this.arr = arr
     this.index = index

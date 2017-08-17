@@ -22,10 +22,10 @@ Rect.prototype.init = function () {
   let newX = center.x - (center.x - cx) * scale
   let newY = center.y - (center.y - cy) * scale
 
-  util.setAttribute(this.element, 'x', newX)
-  util.setAttribute(this.element, 'y', newY)
-  util.setAttribute(this.element, 'width', this.data.width * scale)
-  util.setAttribute(this.element, 'height', this.data.height * scale)
+  util.setAttribute(this.element, 'x', newX + '')
+  util.setAttribute(this.element, 'y', newY + '')
+  util.setAttribute(this.element, 'width', this.data.width * scale + '')
+  util.setAttribute(this.element, 'height', this.data.height * scale + '')
   util.setAttribute(this.element, 'fill', this.style.fillColor)
   this.graph._svgElement.appendChild(this.element)
 }

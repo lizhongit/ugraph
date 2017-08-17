@@ -24,7 +24,7 @@ Circle.prototype.init = function () {
   newX = center.x - (center.x - cx) * scale
 
   util.setAttribute(this.element, 'cx', newX)
-  util.setAttribute(this.element, 'rx', size * scale / 2)
+  util.setAttribute(this.element, 'rx', size * scale / 2 + '')
 
   size = this.data.height ? this.data.height : this.data.width
 
@@ -32,7 +32,7 @@ Circle.prototype.init = function () {
   newY = center.y - (center.y - cy) * scale
 
   util.setAttribute(this.element, 'cy', newY)
-  util.setAttribute(this.element, 'ry', size * scale / 2)
+  util.setAttribute(this.element, 'ry', size * scale / 2 + '')
 
   util.setAttribute(this.element, 'fill', this.style.fillColor)
   this.graph._svgElement.appendChild(this.element)

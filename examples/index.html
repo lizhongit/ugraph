@@ -14,6 +14,8 @@
 		<button onclick="exportJson()">Export JSON</button>
 		<button onclick="exportSvg()">Export SVG</button>
 		<button onclick="exportPng()">Export PNG</button>
+		<button onclick="enableMouseRightDrag()">Enable mouse right drag</button>
+		<button onclick="disableMouseRightDrag()">Disable mouse right drag</button>
 	</div>
 	<div id="graph"></div>
 
@@ -53,13 +55,21 @@
       graph.exportPng().toFile();
     }
 
+    function enableMouseRightDrag() {
+      graph.enableMouseRightOffset(true);
+    }
+
+    function disableMouseRightDrag() {
+      graph.enableMouseRightOffset(false);
+    }
+
 		var random = function (min, max) {
 			return Number(min) + Math.floor(Math.random() * (Number(max) - Number(min)))
 		};
 
 	  window.onload = function () {
 	  	// Init graph
-	    graph = new Graph(document.querySelector('#graph'));
+	    graph = new ug.Graph(document.querySelector('#graph'));
 
 	    // Definition JSON data
 		  var json = {
@@ -74,7 +84,7 @@
 
 					  // TODO Need provide getShapesName function of Graph
 					  // Shape view call the function graph.getShapesName
-					  shape: 'rect'
+					  shapeName: 'Rect'
 				  },
 
 				  {
@@ -85,7 +95,7 @@
 
 					  // TODO Need provide getShapesName function of Graph
 					  // Shape view call the function graph.getShapesName
-					  shape: 'circle'
+					  shapeName: 'Ellipse'
 				  }
 			  ]
 		  };
@@ -102,7 +112,8 @@
 						y: random(0, maxHeight - nodeMax),
 						width: random(nodeMin, nodeMax),
 						height: random(nodeMin, nodeMax),
-						shape: random(0, 10) > 5 ? 'circle' : 'rect',
+						shapeName: Math.random() > 0.5 ? 'Ellipse' : 'Rect',
+						// shapeName: Math.random() > 0.5 ? 'Circle' : 'Circle',
             value: 'Text',
 						style: 'fillColor=' + randomRgb()
 					});
@@ -126,7 +137,10 @@
       graph.setBackgroundImage('./images/grid_bg.png');
 
 		  // Load text json format
-		  graph.loadJson(JSON.stringify(json));
+      // graph.loadJSON(JSON.stringify(json));
+      
+      // Set data
+      graph.setData(json);
 
 		  // Render graph
 		  graph.render();

@@ -27,20 +27,18 @@ export default (Graph) => {
     this._svgHtml = []
 
 		// TODO nodes
-    if (Array.isArray(this._json.nodes)) {
-      this._json.nodes.filter((item) => this._checkNodeData(item)).forEach((item) => {
+    this.cells.forEach((item) => {
 
-        item.id = !item.id || this._model[item.id] ? String(++this._autoindexId) : item.id
-        this._autoindexId = Number(this._autoindexId)
+      item.id = !item.id || this._model[item.id] ? String(++this._autoindexId) : item.id
+      this._autoindexId = Number(this._autoindexId)
 
-        var Shape = this.getShape(item.shape)
-        if (Shape) {
-          this._svgHtml.push((new Shape(this, item).getHtml()))
-        }
-      })
+      var Shape = this.getShape(item.shape)
+      if (Shape) {
+        this._svgHtml.push((new Shape(this, item).getHtml()))
+      }
+    })
 
-      this._svgElement.innerHTML = this._svgHtml.join('')
-    }
+    this._svgElement.innerHTML = this._svgHtml.join('')
   }
 
   Graph.prototype._createShape = function (item) {
