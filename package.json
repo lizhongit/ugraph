@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lizhong8532/ugraph.git"
+    "url": "git+https://github.com/nicholasjs/ugraph.git"
   },
   "keywords": [
     "ugraph",
@@ -26,12 +26,12 @@
     "javascript",
     "library"
   ],
-  "author": "Jong Lee <mail@lizhong.me>",
+  "author": "Nicholas Lee <lizhongit@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lizhong8532/ugraph/issues"
+    "url": "https://github.com/nicholasjs/ugraph/issues"
   },
-  "homepage": "https://github.com/lizhong8532/ugraph#readme",
+  "homepage": "https://github.com/nicholasjs/ugraph#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-core": "^6.20.0",
