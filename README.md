@@ -1,4 +1,4 @@
-# uGraph [![Build Status](https://travis-ci.org/lizhong8532/ugraph.svg?branch=master)](https://travis-ci.org/lizhong8532/ugraph)
+# uGraph [![Build Status](https://travis-ci.org/nicholasjs/ugraph.svg?branch=master)](https://travis-ci.org/nicholasjs/ugraph)
 
 uGraph is an MIT-license open source project, and it's a feature-rich JavaScript & SVG library for implementing custom
  interactive diagrams. Use very easy and has rich API, JSON format do as data type of import/export, 
