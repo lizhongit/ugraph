@@ -1,7 +1,7 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.ug = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.ug = factory());
 }(this, (function () { 'use strict';
 
 var Enum;
@@ -10,7 +10,6 @@ var Enum;
     Enum[Enum["MOUSE_WHEEL_UP"] = 2] = "MOUSE_WHEEL_UP";
 })(Enum || (Enum = {}));
 var EventDefine = Enum;
-//# sourceMappingURL=define.js.map
 
 /**
  * warn
@@ -32,8 +31,12 @@ const error = (msg) => {
 };
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-//# sourceMappingURL=index.js.map
 
+/**
+ * Create tag
+ * @param tagName
+ * @returns {*}
+ */
 const createSVGElement = (tagName) => {
     return document.createElementNS(SVG_NS, tagName);
 };
@@ -190,7 +193,6 @@ const getShape = (name, cell, graph) => {
     }
 };
 var shape = { getShape };
-//# sourceMappingURL=common.js.map
 
 class Cell {
     constructor(node, graph) {
@@ -413,7 +415,6 @@ var main = {
     events: EventDefine,
     util,
 };
-//# sourceMappingURL=main.js.map
 
 return main;
 
