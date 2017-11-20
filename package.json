@@ -5,7 +5,7 @@
   "description": "A feature-rich SVG library",
   "main": "index.js",
   "scripts": {
-    "dev&server": "concurrently -r --kill-others \"yarn run tsc\" \"yarn run rollup\" \"yarn run server\"",
+    "dev-server": "concurrently -r --kill-others \"yarn run rollup\" \"yarn run server\"",
     "tsc": "tsc -w",
     "server": "lite-server",
     "rollup": "rollup -w -c build/rollup.dev.config.js",

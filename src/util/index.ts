@@ -1,3 +1,5 @@
 export * from './console'
 export * from './element'
 export * from './style'
+export * from './check'
+export * from './file'

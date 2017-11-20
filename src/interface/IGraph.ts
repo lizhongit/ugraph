@@ -11,9 +11,12 @@ interface IGraph {
   appendSVGElement(element: SVGElement): void
   zoomIn(): void
   zoomOut(): void
+  zoomActual(): void
   addEventListener(eventName: EventDefine, callback: () => void): boolean
   removeEventListener(eventName: EventDefine, callback: () => void): boolean
   addCells(cells: ICell[]): void
+  saveAsJson(): void
+  getJson(): string
 }
 
 interface IGraphConstructor {

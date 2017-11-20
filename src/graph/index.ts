@@ -125,6 +125,42 @@ class Graph implements IGraph {
     }
   }
 
+  public zoomActual(): void {
+    this.scale = 1
+    this.render()
+  }
+
+  public getJson(): string {
+    let nodes = []
+    this.cells.forEach((item: ICell) => {
+      let o: ICellObject = {
+        x: item.x,
+        y: item.y,
+        width: item.width,
+        height: item.height,
+        shapeName: item.shapeName,
+        value: item.value,
+        style: item.style,
+      }
+      nodes.push(o)
+    })
+    return JSON.stringify({ nodes })
+  }
+
+  public saveAsJson(): void {
+  
+    let str: string = this.getJson()
+    util.saveFile(str, 'application/json')
+  }
+
+  // public getSnapshot(): Blob {
+
+  // }
+
+  // public getSvg(): string {
+
+  // }
+
   public addEventListener(eventName: EventDefine, callback: ICallBack): boolean {
     if (!this.listensMap[eventName]) {
       const item: IListensMapItem = {

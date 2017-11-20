@@ -11,7 +11,7 @@
 		<button onclick="zoomOut()">Zoom Out</button>
 		<button onclick="zoomIn()">Zoom In</button>
 		<button onclick="zoomActual()">Zoom Actual</button>
-		<button onclick="exportJson()">Export JSON</button>
+		<button onclick="saveAsJson()">Save as JSON</button>
 		<button onclick="exportSvg()">Export SVG</button>
 		<button onclick="exportPng()">Export PNG</button>
 		<button onclick="enableMouseRightDrag()">Enable mouse right drag</button>
@@ -43,16 +43,16 @@
       graph.zoomActual();
     }
 
-    function exportJson() {
-      graph.exportJson().toFile();
+    function saveAsJson() {
+      graph.saveAsJson();
     }
 
     function exportSvg() {
-      graph.exportSvg().toFile();
+      graph.exportSvg();
     }
 
     function exportPng() {
-      graph.exportPng().toFile();
+      graph.exportPng();
     }
 
     function enableMouseRightDrag() {

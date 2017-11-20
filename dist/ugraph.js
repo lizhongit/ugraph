@@ -10,6 +10,7 @@ var Enum;
     Enum[Enum["MOUSE_WHEEL_UP"] = 2] = "MOUSE_WHEEL_UP";
 })(Enum || (Enum = {}));
 var EventDefine = Enum;
+//# sourceMappingURL=define.js.map
 
 /**
  * warn
@@ -31,12 +32,8 @@ const error = (msg) => {
 };
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
+//# sourceMappingURL=index.js.map
 
-/**
- * Create tag
- * @param tagName
- * @returns {*}
- */
 const createSVGElement = (tagName) => {
     return document.createElementNS(SVG_NS, tagName);
 };
@@ -66,6 +63,28 @@ const check = (o) => {
     return o;
 };
 
+const isString = (something) => {
+    return typeof something === 'string';
+};
+const isBlob = (something) => {
+    return something instanceof Blob;
+};
+
+// interface AElement {
+// }
+const saveFile = (content, type, fileName) => {
+    let blob = content;
+    if (isString(content)) {
+        blob = new Blob([content], { type });
+    }
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.download = fileName ? fileName : 'untitle';
+    a.href = url;
+    a.click();
+    // HTML
+};
+
 
 
 var util = Object.freeze({
@@ -75,7 +94,10 @@ var util = Object.freeze({
 	createSVGElement: createSVGElement,
 	setAttribute: setAttribute,
 	getAttribute: getAttribute,
-	parseStyle: parseStyle
+	parseStyle: parseStyle,
+	isString: isString,
+	isBlob: isBlob,
+	saveFile: saveFile
 });
 
 class Circle {
@@ -193,6 +215,7 @@ const getShape = (name, cell, graph) => {
     }
 };
 var shape = { getShape };
+//# sourceMappingURL=common.js.map
 
 class Cell {
     constructor(node, graph) {
@@ -299,6 +322,34 @@ class Graph {
             this.render();
         }
     }
+    zoomActual() {
+        this.scale = 1;
+        this.render();
+    }
+    getJson() {
+        let nodes = [];
+        this.cells.forEach((item) => {
+            let o = {
+                x: item.x,
+                y: item.y,
+                width: item.width,
+                height: item.height,
+                shapeName: item.shapeName,
+                value: item.value,
+                style: item.style,
+            };
+            nodes.push(o);
+        });
+        return JSON.stringify({ nodes });
+    }
+    saveAsJson() {
+        let str = this.getJson();
+        saveFile(str, 'application/json');
+    }
+    // public getSnapshot(): Blob {
+    // }
+    // public getSvg(): string {
+    // }
     addEventListener(eventName, callback) {
         if (!this.listensMap[eventName]) {
             const item = {
@@ -415,6 +466,7 @@ var main = {
     events: EventDefine,
     util,
 };
+//# sourceMappingURL=main.js.map
 
 return main;
 
